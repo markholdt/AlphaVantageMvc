@@ -1,0 +1,82 @@
+﻿@model SearchModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h5>AlphaVantage MVC Demo</h5>
+
+</div>
+<form method="post">
+
+
+    <div class="table-responsive">
+        <table class="table small">
+
+            <tr>
+                <td>
+                    <label>Enter Ticker</label> <input type="text" asp-for="Ticker" class="form-control" />
+                </td>
+                <td style="vertical-align: bottom">  <button asp-controller="Home" asp-action="Index" class="btn btn-primary">Retrieve</button></td>
+            </tr>
+        </table>
+    </div>
+</form>
+@{
+    if (Model.ErrorMessage != "")
+    {
+        <span style="color: red"><strong>An error occured: </strong>'@Model.ErrorMessage'</span>
+    }
+}
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Timestamp
+                        </th>
+                        <th>
+                            Volume
+                        </th>
+                        <th>
+                            Low
+                        </th>
+                        <th>
+                            High
+                        </th>
+                        <th>
+                            Open
+                        </th>
+                        <th>
+                            Close
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var m in @Model.Prices.OrderBy(ar => ar.Timestamp))
+                {
+                    <tr>
+                        <td>
+                            @m.Timestamp
+                        </td>
+                        <td>
+                            @m.Volume.ToString("N0")
+                        </td>
+                        <td>
+                            @m.Low.ToString("N2")
+
+                        </td>
+                        <td>
+                            @m.High.ToString("N2")
+
+                        </td>
+                        <td>
+                            @m.Open.ToString("N2")
+                        </td>
+                        <td>
+                            @m.Close.ToString("N2")
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
