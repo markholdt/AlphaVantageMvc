@@ -9,7 +9,13 @@ namespace AlphaMvc.Models
     {
         public string Ticker { get; set; } = "";
 
-        public List<AlphaVantagePrice> Prices { get; set; } = new List<AlphaVantagePrice>();
+        public int PageNr { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+       
+
+        public int TotalRecords { get; set; } = 0;
+        public int TotalPages { get; set; } = 0;
+        public List<AlphaVantagePrice> Results { get; set; } = new List<AlphaVantagePrice>();
         public string ErrorMessage { get; set; } = "";
     }
 

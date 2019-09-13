@@ -4,10 +4,10 @@
 }
 
 <div class="text-center">
-    <h5>AlphaVantage MVC Demo</h5>
+    <h5>AlphaVantage Demo - MVC .NET Core </h5>
 
 </div>
-<form method="post">
+<form  method="get">
 
 
     <div class="table-responsive">
@@ -17,11 +17,10 @@
                 <td>
                     <label>Enter Ticker</label> <input type="text" asp-for="Ticker" class="form-control" />
                 </td>
-                <td style="vertical-align: bottom">  <button asp-controller="Home" asp-action="Index" class="btn btn-primary">Retrieve</button></td>
+                <td style="vertical-align: bottom; horiz-align: center">  <button asp-controller="Home" asp-action="Index" class="btn btn-dark">Fetch Data from AlphaVantage</button></td>
             </tr>
         </table>
     </div>
-</form>
 @{
     if (Model.ErrorMessage != "")
     {
@@ -29,54 +28,68 @@
     }
 }
 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            Timestamp
-                        </th>
-                        <th>
-                            Volume
-                        </th>
-                        <th>
-                            Low
-                        </th>
-                        <th>
-                            High
-                        </th>
-                        <th>
-                            Open
-                        </th>
-                        <th>
-                            Close
-                        </th>
-                    </tr>
-                </thead>
-                @foreach (var m in @Model.Prices.OrderBy(ar => ar.Timestamp))
+<div class="table-responsive">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Timestamp
+                </th>
+                <th>
+                    Volume
+                </th>
+                <th>
+                    Low
+                </th>
+                <th>
+                    High
+                </th>
+                <th>
+                    Open
+                </th>
+                <th>
+                    Close
+                </th>
+            </tr>
+        </thead>
+        @foreach (var m in @Model.Results)
+        {
+            <tr>
+                <td>
+                    @m.Timestamp.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @m.Volume.ToString("N0")
+                </td>
+                <td>
+                    @m.Low.ToString("N2")
+
+                </td>
+                <td>
+                    @m.High.ToString("N2")
+
+                </td>
+                <td>
+                    @m.Open.ToString("N2")
+                </td>
+                <td>
+                    @m.Close.ToString("N2")
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="text-center">
+        <nav class="navbar-dark align-content-center">
+            <ul class="pagination">
+                @for (var i = 1; i <= Model.TotalPages; i++)
                 {
-                    <tr>
-                        <td>
-                            @m.Timestamp
-                        </td>
-                        <td>
-                            @m.Volume.ToString("N0")
-                        </td>
-                        <td>
-                            @m.Low.ToString("N2")
-
-                        </td>
-                        <td>
-                            @m.High.ToString("N2")
-
-                        </td>
-                        <td>
-                            @m.Open.ToString("N2")
-                        </td>
-                        <td>
-                            @m.Close.ToString("N2")
-                        </td>
-                    </tr>
+                    <li class="page-item @(i == Model.PageNr ? "active" : "")">
+                        <a asp-controller="Home" asp-action="Index" asp-route-pageNr="@i" asp-route-ticker="@Model.Ticker" class="page-link">@i</a>
+                    </li>
                 }
-            </table>
-        </div>
+            </ul>
+        </nav>
+    </div>
+    </div>
+</form>

@@ -11,7 +11,7 @@ namespace AlphaMvc.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(string ticker = "")
+        public IActionResult Index(string ticker = "", int pageNr =1, int pageSize =10)
         {
 
             var response = new SearchModel {Ticker = ticker};
@@ -26,7 +26,15 @@ namespace AlphaMvc.Controllers
                         .GetStringFromUrl();
                 try
                 {
-                    response.Prices = apiResponse.FromCsv<List<AlphaVantagePrice>>().OrderByDescending(ar => ar.Timestamp).Take(10).ToList();
+                    var allPrices = apiResponse.FromCsv<List<AlphaVantagePrice>>().ToList();
+                    
+                    int totalRecords = allPrices.Count;
+                    int totalPages = (totalRecords + pageSize - 1) / pageSize;
+
+                    response.TotalPages = totalPages;
+                    response.TotalRecords = totalRecords;
+
+                    response.Results = allPrices.OrderByDescending(ar => ar.Timestamp).Skip((pageNr  -1) * pageSize).Take(pageSize).ToList();
                 }
                 catch (Exception exc)
                 {
@@ -34,10 +42,17 @@ namespace AlphaMvc.Controllers
                 }
             }
 
+            response.PageNr = pageNr;
+            response.PageSize = pageSize;
             return View(response);
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Download()
         {
             return View();
         }
